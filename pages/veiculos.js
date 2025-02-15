@@ -2,16 +2,8 @@ import { useQuery, gql, useMutation } from '@apollo/client';
 import client from '../apolloClient';
 import { useState } from 'react';
 import Link from 'next/link';
+import '../styles.css';
 
-
-const GET_MONTADORAS = gql`
-  query GetMontadoras {
-    montadoras {
-      id
-      nome
-    }
-  }
-`;
 
 const GET_VEICULOS = gql`
   query GetVeiculos {
@@ -28,8 +20,17 @@ const GET_VEICULOS = gql`
   }
 `;
 
+const GET_MONTADORAS = gql`
+  query GetMontadoras {
+    montadoras {
+      id
+      nome
+    }
+  }
+`;
+
 const ADD_VEICULO = gql`
-  mutation AddVeiculo($modelo: String!, $marca: String!, $ano: Int, $montadora_id: ID!) {
+  mutation AddVeiculo($modelo: String!, $marca: String!, $ano: Int!, $montadora_id: ID!) {
     addVeiculo(modelo: $modelo, marca: $marca, ano: $ano, montadora_id: $montadora_id) {
       id
       modelo
@@ -65,10 +66,10 @@ const DELETE_VEICULO = gql`
 `;
 
 function VeiculosPage() {
-  const { loading: loadingVeiculos, error: errorVeiculos, data: dataVeiculos } = useQuery(GET_VEICULOS, { client });
-  const { loading, error, data } = useQuery(GET_MONTADORAS, { client });
+  const { loading, error, data, refetch } = useQuery(GET_VEICULOS, { client });
+  const { loading: montadorasLoading, error: montadorasError, data: montadorasData } = useQuery(GET_MONTADORAS, { client });
 
-  const [addVeiculoMutation] = useMutation(ADD_VEICULO, {
+  const [addVeiculo] = useMutation(ADD_VEICULO, {
     client,
     onCompleted: () => {
       setModelo('');
@@ -76,22 +77,22 @@ function VeiculosPage() {
       setAno('');
       setMontadoraId('');
       refetch();
-    },
+    }
   });
 
-  const [updateVeiculoMutation] = useMutation(UPDATE_VEICULO, {
+  const [updateVeiculo] = useMutation(UPDATE_VEICULO, {
     client,
     onCompleted: () => {
       setEditingVeiculo(null);
       refetch();
-    },
+    }
   });
 
-  const [deleteVeiculoMutation] = useMutation(DELETE_VEICULO, {
+  const [deleteVeiculo] = useMutation(DELETE_VEICULO, {
     client,
     onCompleted: () => {
       refetch();
-    },
+    }
   });
 
   const [modelo, setModelo] = useState('');
@@ -102,86 +103,70 @@ function VeiculosPage() {
 
   const handleAddVeiculo = (e) => {
     e.preventDefault();
-    console.log("handleAddVeiculo chamado");
-    console.log("Dados do veículo:", { modelo, marca, ano, montadoraId });
-    addVeiculoMutation({ variables: { modelo, marca, ano: ano ? parseInt(ano) : null, montadora_id: montadoraId } })
-      .then(response => {
-        console.log("Resposta do addVeiculoMutation:", response);
-      })
-      .catch(error => {
-        console.error("Erro no addVeiculoMutation:", error);
-      });
+    addVeiculo({ variables: { modelo, marca, ano: parseInt(ano), montadora_id: montadoraId } });
   };
 
-  if (loadingVeiculos) return null;
-  if (errorVeiculos) return <p>Erro ao carregar veículos: {errorVeiculos.message}</p>;
+  const handleUpdateVeiculo = (e) => {
+    e.preventDefault();
+    updateVeiculo({ variables: { id: editingVeiculo, modelo, marca, ano: parseInt(ano), montadora_id: montadoraId } });
+  };
+
+  const handleDeleteVeiculo = (id) => {
+    deleteVeiculo({ variables: { id } });
+  };
+
+  if (loading || montadorasLoading) return <p>Carregando...</p>;
+  if (error || montadorasError) return <p>Erro: {error?.message || montadorasError?.message}</p>;
 
   return (
     <div>
-        <>
-  <nav>
-    <Link href="/montadoras">Ir para Montadoras</Link>
-  </nav>
+      <nav>
+        <Link href="/">Voltar para Montadoras</Link>
+      </nav>
 
-  {/* O restante do código da página */}
-</>
       <h1>Adicionar Veículo</h1>
-      <form onSubmit={handleAddVeiculo}>
-        <label>Modelo:</label>
-        <input type="text" value={modelo} onChange={(e) => setModelo(e.target.value)} />
-
-        <label>Marca:</label>
-        <input type="text" value={marca} onChange={(e) => setMarca(e.target.value)} />
-
-        <label>Ano:</label>
-        <input type="number" value={ano} onChange={(e) => setAno(e.target.value)} />
-
-        <label>Montadora:</label>
-        <select value={montadoraId} onChange={(e) => setMontadoraId(e.target.value)}>
-          <option value="">Selecione uma montadora</option>
-          {data?.montadoras?.map((montadora) => (
-            <option key={montadora.id} value={montadora.id}>
-              {montadora.nome}
-            </option>
-          ))}
-        </select>
-
-        <button type="submit">Adicionar Veículo</button>
+      <form onSubmit={editingVeiculo ? handleUpdateVeiculo : handleAddVeiculo}>
+        <div>
+          <label htmlFor="modelo">Modelo:</label>
+          <input type="text" id="modelo" value={modelo} onChange={(e) => setModelo(e.target.value)} />
+        </div>
+        <div>
+          <label htmlFor="marca">Marca:</label>
+          <input type="text" id="marca" value={marca} onChange={(e) => setMarca(e.target.value)} />
+        </div>
+        <div>
+          <label htmlFor="ano">Ano:</label>
+          <input type="number" id="ano" value={ano} onChange={(e) => setAno(e.target.value)} />
+        </div>
+        <div>
+          <label htmlFor="montadora">Montadora:</label>
+          <select value={montadoraId} onChange={(e) => setMontadoraId(e.target.value)}>
+            <option value="">Selecione uma Montadora</option>
+            {montadorasData?.montadoras?.map((montadora) => (
+              <option key={montadora.id} value={montadora.id}>{montadora.nome}</option>
+            ))}
+          </select>
+        </div>
+        <button type="submit">{editingVeiculo ? "Salvar" : "Adicionar"}</button>
+        {editingVeiculo && <button onClick={() => setEditingVeiculo(null)}>Cancelar</button>}
       </form>
 
       <h1>Lista de Veículos</h1>
       <ul>
-        {dataVeiculos?.veiculos?.map((veiculo) => (
+        {data?.veiculos?.map((veiculo) => (
           <li key={veiculo.id}>
-            {veiculo.modelo} - {veiculo.marca} ({veiculo.ano}) - {veiculo.montadora.nome}
+            {veiculo.modelo} - {veiculo.marca} ({veiculo.ano}) - Montadora: {veiculo.montadora ? veiculo.montadora.nome : "Desconhecida"}
+            <button onClick={() => {
+              setModelo(veiculo.modelo);
+              setMarca(veiculo.marca);
+              setAno(veiculo.ano);
+              setMontadoraId(veiculo.montadora?.id || '');
+              setEditingVeiculo(veiculo.id);
+            }}>Editar</button>
+            <button onClick={() => handleDeleteVeiculo(veiculo.id)}>Excluir</button>
           </li>
         ))}
       </ul>
-
-      <h1>Editar Veículo</h1>
-      <form>
-        <label>Modelo:</label>
-        <input type="text" value={modelo} onChange={(e) => setModelo(e.target.value)} />
-
-        <label>Marca:</label>
-        <input type="text" value={marca} onChange={(e) => setMarca(e.target.value)} />
-
-        <label>Ano:</label>
-        <input type="number" value={ano} onChange={(e) => setAno(e.target.value)} />
-
-        <label>Montadora:</label>
-        <select value={montadoraId} onChange={(e) => setMontadoraId(e.target.value)}>
-          <option value="">Selecione uma montadora</option>
-          {data?.montadoras?.map((montadora) => (
-            <option key={montadora.id} value={montadora.id}>
-              {montadora.nome}
-            </option>
-          ))}
-        </select>
-
-        <button type="submit">Salvar</button>
-        <button type="button" onClick={() => setEditingVeiculo(null)}>Cancelar</button>
-      </form>
     </div>
   );
 }

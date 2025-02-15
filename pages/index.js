@@ -2,6 +2,8 @@ import { useQuery, gql, useMutation } from '@apollo/client'; // Adicione useMuta
 import client from '../apolloClient';
 import { useState } from 'react'; // Importe useState
 import Link from 'next/link';
+import '../styles.css';
+
 
 const GET_MONTADORAS = gql`
   query GetMontadoras {
@@ -91,10 +93,9 @@ function HomePage() {
     <div>
         <>
   <nav>
-    <Link href="/veiculos">Ir para Veículos</Link>
+    <Link href="/veiculos">Ir para veiculos</Link>
   </nav>
 
-  {/* O restante do código da página */}
 </>
       <h1>Adicionar Montadora</h1>
       <form onSubmit={handleAddMontadora}>
