@@ -1,109 +1,101 @@
-/* Reset básico para garantir consistência */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Dark mode */
-  body {
-    background-color: #121212;
-    color: #e0e0e0;
-    padding: 20px;
-  }
-  
-  /* Container principal */
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #1e1e1e;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Títulos */
-  h1, h2 {
-    text-align: center;
-    color: #ffffff;
-    margin-bottom: 20px;
-  }
-  
-  /* Formulários */
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #252525;
-    padding: 15px;
-    border-radius: 8px;
-  }
-  
-  label {
-    font-weight: bold;
-  }
-  
-  input, select {
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    background: #333;
-    color: #fff;
-  }
-  
-  button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background: #6200ea;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  button:hover {
-    background: #3700b3;
-  }
-  
-  /* Lista de itens */
-  ul {
-    list-style: none;
-    margin-top: 20px;
-  }
-  
-  li {
-    background: #252525;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  /* Botões dentro da lista */
-  li button {
-    margin-left: 10px;
-    background: #d32f2f;
-  }
-  
-  li button:hover {
-    background: #b71c1c;
-  }
-  
-  /* Links de navegação */
-  nav {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  nav a {
-    color: #bb86fc;
-    text-decoration: none;
-    font-size: 18px;
-  }
-  
-  nav a:hover {
-    text-decoration: underline;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+h1, h2 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #252525;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input, select {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background: #333;
+  color: #fff;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #6200ea;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #3700b3;
+}
+
+ul {
+  list-style: none;
+  margin-top: 20px;
+}
+
+li {
+  background: #252525;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li button {
+  margin-left: 10px;
+  background: #d32f2f;
+}
+
+li button:hover {
+  background: #b71c1c;
+}
+
+nav {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+nav a {
+  color: #bb86fc;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}

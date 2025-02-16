@@ -1,9 +1,8 @@
-import { useQuery, gql, useMutation } from '@apollo/client'; // Adicione useMutation
+import { useQuery, gql, useMutation } from '@apollo/client';
 import client from '../apolloClient';
-import { useState } from 'react'; // Importe useState
+import { useState } from 'react';
 import Link from 'next/link';
 import '../styles.css';
-
 
 const GET_MONTADORAS = gql`
   query GetMontadoras {
@@ -42,20 +41,20 @@ const UPDATE_MONTADORA = gql`
 `;
 
 function HomePage() {
-  const { loading, error, data, refetch } = useQuery(GET_MONTADORAS, { client }); // Adicione refetch
+  const { loading, error, data, refetch } = useQuery(GET_MONTADORAS, { client });
   const [addMontadora, { loading: mutationLoading, error: mutationError }] = useMutation(ADD_MONTADORA, {
     client,
     onCompleted: () => {
       setNome('');
       setEndereco('');
-      refetch(); // Atualiza a lista de montadoras após adicionar uma nova
+      refetch();
     }
   });
 
   const [deleteMontadoraMutation] = useMutation(DELETE_MONTADORA, {
     client,
     onCompleted: () => {
-      refetch(); // Atualiza a lista após a exclusão
+      refetch();
     },
   });
 
@@ -63,16 +62,16 @@ function HomePage() {
     client,
     onCompleted: () => {
       setEditingMontadora(null);
-      refetch(); // Atualiza a lista após a atualização
+      refetch();
     },
   });
 
   const [nome, setNome] = useState('');
   const [endereco, setEndereco] = useState('');
-  const [editingMontadora, setEditingMontadora] = useState(null); // Novo estado para controlar a edição
+  const [editingMontadora, setEditingMontadora] = useState(null);
 
   const handleAddMontadora = (e) => {
-    e.preventDefault(); // Impede o envio padrão do formulário
+    e.preventDefault();
     addMontadora({ variables: { nome, endereco } });
   };
 
@@ -85,18 +84,14 @@ function HomePage() {
     updateMontadoraMutation({ variables: { id: id, nome: nome, endereco: endereco } });
   };
 
-
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>Erro: {error.message}</p>;
 
   return (
     <div>
-        <>
-  <nav>
-    <Link href="/veiculos">Ir para veiculos</Link>
-  </nav>
-
-</>
+      <nav>
+        <Link href="/veiculos">Ir para veiculos</Link>
+      </nav>
       <h1>Adicionar Montadora</h1>
       <form onSubmit={handleAddMontadora}>
         <div>
